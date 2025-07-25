@@ -4,9 +4,17 @@ import folium
 import json
 import os
 import numpy as np
+import glob
 
-# Caminho do GeoJSON
-geojson_path = os.path.join("Shapefile", "area_propriedade.geojson")
+# Procurar automaticamente o primeiro arquivo .geojson na pasta Shapefile
+def encontrar_geojson():
+    arquivos = glob.glob(os.path.join("Shapefile", "*.geojson"))
+    if arquivos:
+        return arquivos[0]
+    else:
+        return None
+
+geojson_path = encontrar_geojson()
 
 # Lista de usuários e senhas
 usuarios = {
