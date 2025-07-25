@@ -80,6 +80,9 @@ st.sidebar.title("Opções do Mapa")
 show_shapefile = st.sidebar.checkbox("Exibir Shapefile", value=True)
 
 # Carregar o GeoJSON
+if geojson_path is None:
+    st.error("Nenhum arquivo .geojson encontrado na pasta Shapefile. Por favor, adicione um arquivo para visualizar o mapa.")
+    st.stop()
 try:
     with open(geojson_path, "r", encoding="utf-8") as f:
         geojson_data = json.load(f)
