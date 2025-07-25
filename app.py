@@ -5,16 +5,18 @@ import json
 import os
 import numpy as np
 import glob
+import geopandas as gpd
 
-# Procurar automaticamente o primeiro arquivo .geojson na pasta Shapefile
-def encontrar_geojson():
-    arquivos = glob.glob(os.path.join("Shapefile", "*.geojson"))
+# Procurar automaticamente o primeiro arquivo .shp na pasta Shapefile
+
+def encontrar_shapefile():
+    arquivos = glob.glob(os.path.join("Shapefile", "*.shp"))
     if arquivos:
         return arquivos[0]
     else:
         return None
 
-geojson_path = encontrar_geojson()
+shapefile_path = encontrar_shapefile()
 
 # Lista de usuários e senhas
 usuarios = {
@@ -79,15 +81,15 @@ st.set_page_config(layout="wide")
 st.sidebar.title("Opções do Mapa")
 show_shapefile = st.sidebar.checkbox("Exibir Shapefile", value=True)
 
-# Carregar o GeoJSON
-if geojson_path is None:
-    st.error("Nenhum arquivo .geojson encontrado na pasta Shapefile. Por favor, adicione um arquivo para visualizar o mapa.")
+# Carregar o Shapefile e converter para GeoJSON
+if shapefile_path is None:
+    st.error("Nenhum arquivo .shp encontrado na pasta Shapefile. Por favor, adicione um Shapefile para visualizar o mapa.")
     st.stop()
 try:
-    with open(geojson_path, "r", encoding="utf-8") as f:
-        geojson_data = json.load(f)
+    gdf = gpd.read_file(shapefile_path)
+    geojson_data = gdf.__geo_interface__
 except Exception as e:
-    st.error(f"Erro ao carregar o arquivo GeoJSON: {e}")
+    st.error(f"Erro ao carregar o arquivo Shapefile: {e}")
     st.stop()
 
 # Calcular centroide do polígono
