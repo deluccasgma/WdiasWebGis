@@ -7,14 +7,13 @@
    pip install -r requirements.txt
    ```
 
-2. Certifique-se de que o arquivo `area_do_imovel.geojson` está na pasta `Shapefile`.
+2. Coloque os arquivos do seu Shapefile ( .shp, .shx, .dbf, .prj … ) em qualquer pasta do repositório (por exemplo `Shapefile/`). O aplicativo localiza o primeiro .shp automaticamente, mesmo se estiver em sub-pastas.
 
 3. Execute o aplicativo:
    ```
    streamlit run app.py
    ```
 
-4. O mapa será aberto no navegador. Você pode alternar entre 3 mapas de fundo e exibir/ocultar o GeoJSON.
+4. O mapa será aberto no navegador. Você pode alternar entre 3 mapas de fundo e exibir/ocultar a camada vetorial.
 
-- O arquivo GeoJSON deve estar na pasta `Shapefile`.
-- O zoom inicial foca na área do GeoJSON. 
+- O zoom inicial foca automaticamente na área do vetor carregado. 
