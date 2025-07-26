@@ -1,5 +1,14 @@
-streamlit
-streamlit-folium
-folium 
-geopandas
-shapely 
+streamlit==1.34.0
+streamlit-folium==0.17.0
+folium==0.15.1
+
+# --- stack geoespacial ---
+geopandas==0.14.3
+shapely==2.0.4
+pyproj==3.6.1
+fiona==1.9.5
+rtree==1.2.0  # opcional (velocidade) – depende de libspatialindex já presente na imagem do Streamlit Cloud
+
+# dependências de base (explícitas para evitar versões muito antigas)
+pandas==2.2.2
+numpy==1.26.4 
