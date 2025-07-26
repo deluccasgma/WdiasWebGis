@@ -5,4 +5,8 @@ python3-setuptools
 libgdal-dev
 libspatialindex-dev
 libgeos-dev
-libproj-dev 
+libproj-dev
+libgdal30
+libgeos-c1v5
+libproj22
+libspatialindex7 

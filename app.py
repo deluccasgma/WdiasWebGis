@@ -5,7 +5,14 @@ import json
 import os
 import numpy as np
 import glob
-import geopandas as gpd
+
+# Tentar importar geopandas, mas não falhar se não conseguir
+try:
+    import geopandas as gpd
+    GEOPANDAS_AVAILABLE = True
+except ImportError:
+    GEOPANDAS_AVAILABLE = False
+    st.warning("⚠️ GeoPandas não está disponível. Usando dados de exemplo.")
 
 # Procurar automaticamente o primeiro arquivo .shp na pasta atual
 def encontrar_shapefile():
@@ -105,78 +112,84 @@ st.markdown("---")
 # Sidebar para configurações
 st.sidebar.title("⚙️ Configurações do Mapa")
 
-# Carregar o Shapefile e converter para GeoJSON
-if shapefile_path is None:
-    st.error("❌ Nenhum arquivo .shp encontrado no diretório. Por favor, adicione um Shapefile para visualizar o mapa.")
-    st.stop()
+# Carregar dados geoespaciais
+geojson_data = None
+center = [-23.5489, -46.6388]  # São Paulo como padrão
 
-try:
-    gdf = gpd.read_file(shapefile_path)
-    geojson_data = gdf.__geo_interface__
-    
-    # Exibir informações do shapefile
-    st.sidebar.success(f"✅ Shapefile carregado: {os.path.basename(shapefile_path)}")
-    st.sidebar.info(f"📊 Número de feições: {len(gdf)}")
-    
-    # Mostrar atributos disponíveis
-    if not gdf.empty:
-        st.sidebar.subheader("📋 Atributos disponíveis:")
-        for col in gdf.columns:
-            if col != 'geometry':
-                st.sidebar.text(f"• {col}")
-    
-except Exception as e:
-    st.error(f"❌ Erro ao carregar o arquivo Shapefile: {e}")
-    st.stop()
+if GEOPANDAS_AVAILABLE and shapefile_path:
+    try:
+        gdf = gpd.read_file(shapefile_path)
+        geojson_data = gdf.__geo_interface__
+        
+        # Exibir informações do shapefile
+        st.sidebar.success(f"✅ Shapefile carregado: {os.path.basename(shapefile_path)}")
+        st.sidebar.info(f"📊 Número de feições: {len(gdf)}")
+        
+        # Mostrar atributos disponíveis
+        if not gdf.empty:
+            st.sidebar.subheader("📋 Atributos disponíveis:")
+            for col in gdf.columns:
+                if col != 'geometry':
+                    st.sidebar.text(f"• {col}")
+        
+        # Calcular centroide para centralizar o mapa
+        if geojson_data["features"]:
+            geometry = geojson_data["features"][0]["geometry"]
+            coords = geometry["coordinates"]
+            if geometry["type"] == "Polygon":
+                # Calcular centroide simples
+                x_coords = [p[0] for p in coords[0]]
+                y_coords = [p[1] for p in coords[0]]
+                center = [sum(y_coords)/len(y_coords), sum(x_coords)/len(x_coords)]
+            elif geometry["type"] == "MultiPolygon":
+                # Pega o primeiro polígono do multipolígono
+                x_coords = [p[0] for p in coords[0][0]]
+                y_coords = [p[1] for p in coords[0][0]]
+                center = [sum(y_coords)/len(y_coords), sum(x_coords)/len(x_coords)]
+        
+    except Exception as e:
+        st.sidebar.error(f"❌ Erro ao carregar shapefile: {e}")
+        geojson_data = None
+
+# Se não conseguiu carregar shapefile, usar dados de exemplo
+if geojson_data is None:
+    st.sidebar.warning("⚠️ Usando dados de exemplo")
+    geojson_data = {
+        "type": "FeatureCollection",
+        "features": [
+            {
+                "type": "Feature",
+                "properties": {
+                    "nome": "Área do Imóvel",
+                    "area_ha": "150.5",
+                    "proprietario": "João Silva",
+                    "municipio": "São Paulo"
+                },
+                "geometry": {
+                    "type": "Polygon",
+                    "coordinates": [[
+                        [-46.6388, -23.5489],
+                        [-46.6388, -23.5480],
+                        [-46.6378, -23.5480],
+                        [-46.6378, -23.5489],
+                        [-46.6388, -23.5489]
+                    ]]
+                }
+            }
+        ]
+    }
 
 # Opções do mapa
 show_shapefile = st.sidebar.checkbox("🗺️ Exibir Shapefile", value=True)
 show_popup = st.sidebar.checkbox("💬 Exibir Popups", value=True)
 show_measure = st.sidebar.checkbox("📏 Ferramenta de Medição", value=True)
 
-# Calcular centroide do polígono
-def calcular_centroide(coords):
-    if not coords or not coords[0]:
-        return [0, 0]
-    
-    x = [p[0] for p in coords[0]]
-    y = [p[1] for p in coords[0]]
-    area = 0.0
-    cx = 0.0
-    cy = 0.0
-    n = len(coords[0]) - 1  # último ponto é igual ao primeiro
-    for i in range(n):
-        fator = x[i] * y[i+1] - x[i+1] * y[i]
-        area += fator
-        cx += (x[i] + x[i+1]) * fator
-        cy += (y[i] + y[i+1]) * fator
-    area *= 0.5
-    if area == 0:
-        return [y[0], x[0]]
-    cx /= (6.0 * area)
-    cy /= (6.0 * area)
-    return [cy, cx]
-
-# Calcular centroide para centralizar o mapa
-if geojson_data["features"]:
-    geometry = geojson_data["features"][0]["geometry"]
-    coords = geometry["coordinates"]
-    if geometry["type"] == "Polygon":
-        center = calcular_centroide(coords)
-    elif geometry["type"] == "MultiPolygon":
-        # Pega o primeiro polígono do multipolígono
-        center = calcular_centroide(coords[0])
-    else:
-        center = [0, 0]
-else:
-    center = [0, 0]
-
 # Criar o mapa folium
 m = folium.Map(
     location=center, 
     zoom_start=16, 
     control_scale=True,
-    tiles=None  # Não carregar tiles padrão
+    tiles=None
 )
 
 # Adicionar mapas de fundo
