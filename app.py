@@ -10,7 +10,8 @@ import geopandas as gpd
 # Procurar automaticamente o primeiro arquivo .shp na pasta Shapefile
 
 def encontrar_shapefile():
-    arquivos = glob.glob(os.path.join("Shapefile", "*.shp"))
+    # Procura por qualquer arquivo .shp em todo o repositório (subpastas incluídas)
+    arquivos = glob.glob("**/*.shp", recursive=True)
     if arquivos:
         return arquivos[0]
     else:
