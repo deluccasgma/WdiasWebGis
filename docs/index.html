@@ -1,0 +1,112 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebGIS - WDias Engenharia</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-sA+e2F6qoJKDeWMYzHifZDgs3x4bGmRPR2IB3xskXwY="
+    crossorigin=""
+  />
+  <style>
+    html,
+    body,
+    #map {
+      height: 100%;
+      margin: 0;
+    }
+    .leaflet-container {
+      font-family: "Roboto", sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <!-- Leaflet -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-Da/IjusymK2bqh2uhVUoUhrDGMfUcxC4jH9jHO6P80Y="
+    crossorigin=""
+  ></script>
+  <!-- shpjs: carrega shapefiles zipados no navegador -->
+  <script src="https://unpkg.com/shpjs@latest/dist/shp.min.js"></script>
+
+  <script>
+    // Inicializa o mapa com posição genérica (será ajustado após carregar o shapefile)
+    var map = L.map("map", {
+      center: [-15, -55],
+      zoom: 4,
+      attributionControl: true,
+    });
+
+    // Camadas base
+    var osm = L.tileLayer(
+      "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      {
+        maxZoom: 19,
+        attribution: "© OpenStreetMap contributors",
+      }
+    ).addTo(map);
+
+    var esriSat = L.tileLayer(
+      "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+      {
+        maxZoom: 19,
+        attribution:
+          "Tiles © Esri | Sources: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, IGN, IGP, and the GIS User Community",
+      }
+    );
+
+    var baseLayers = {
+      "OpenStreetMap": osm,
+      "Satélite (Esri)": esriSat,
+    };
+    L.control.layers(baseLayers).addTo(map);
+
+    // Função de estilo para o vetor
+    function estiloDefault() {
+      return {
+        color: "#ff6600",
+        weight: 2,
+        fillColor: "#ffb266",
+        fillOpacity: 0.5,
+      };
+    }
+
+    // Carrega o arquivo ZIP do shapefile localizado em docs/data/area.zip
+    shp("data/area.zip")
+      .then(function (geojson) {
+        var layer = L.geoJSON(geojson, {
+          style: estiloDefault,
+          onEachFeature: function (feature, layer) {
+            var props = feature.properties;
+            var html = "<table>";
+            for (var key in props) {
+              html +=
+                "<tr><th style='text-align:left;padding:4px;'>" +
+                key +
+                "</th><td style='padding:4px;'>" +
+                props[key] +
+                "</td></tr>";
+            }
+            html += "</table>";
+            layer.bindPopup(html);
+          },
+        }).addTo(map);
+
+        // Ajusta o mapa à extensão do shapefile
+        map.fitBounds(layer.getBounds());
+      })
+      .catch(function (error) {
+        console.error("Erro ao carregar o shapefile:", error);
+        alert(
+          "Não foi possível carregar o shapefile. Verifique se docs/data/area.zip existe."
+        );
+      });
+  </script>
+</body>
+</html>
