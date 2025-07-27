@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WebGIS - Wdias</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            margin: 0;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 30px;
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 10px; }
+        h2 { font-size: 1.2rem; margin-bottom: 30px; opacity: 0.9; }
+        .propriedade {
+            background: rgba(255,255,255,0.2);
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            border-left: 4px solid #FF6B6B;
+        }
+        .contato {
+            margin-top: 30px;
+            padding: 20px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 10px;
+        }
+        .btn {
+            background: #FF6B6B;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            margin: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover { background: #e55a5a; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ WebGIS</h1>
+        <h2>Sistema de Informações Geográficas - Wdias</h2>
+        
+        <div style="font-size: 4rem; margin: 20px;">🗺️</div>
+        <h3>Mapa Interativo</h3>
+        <p>Sistema de mapeamento rural</p>
+        
+        <div class="propriedade">
+            <strong>Propriedade 1:</strong> 150 hectares - Agricultura
+        </div>
+        <div class="propriedade">
+            <strong>Propriedade 2:</strong> 200 hectares - Pecuária
+        </div>
+        <div class="propriedade">
+            <strong>Propriedade 3:</strong> 300 hectares - Mista
+        </div>
+        
+        <div class="contato">
+            <h3>📞 Contato</h3>
+            <p>📧 contato@wdias.com.br</p>
+            <p>📞 (11) 99999-9999</p>
+            <p>📍 São Paulo, SP</p>
+        </div>
+        
+        <div style="margin-top: 20px;">
+            <button class="btn" onclick="alert('Funcionalidade em desenvolvimento!')">🗺️ Ver Mapa</button>
+            <button class="btn" onclick="alert('Em breve!')">📊 Relatórios</button>
+        </div>
+        
+        <div style="margin-top: 30px; opacity: 0.8; font-size: 14px;">
+            <p>&copy; 2024 WebGIS - Wdias Assessoria Rural</p>
+            <p>Desenvolvido com ❤️ para o setor rural</p>
+        </div>
+    </div>
+    
+    <script>
+        console.log('WebGIS carregado com sucesso!');
+        let visitantes = localStorage.getItem('visitantes') || 0;
+        visitantes = parseInt(visitantes) + 1;
+        localStorage.setItem('visitantes', visitantes);
+        console.log(`Visitante #${visitantes}`);
+    </script>
+</body>
+</html>
