@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGIS - Wdias</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+        
+        .map-container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 2rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(10px);
+        }
+        
+        .map-placeholder {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+        
+        .property-list {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .property-item {
+            background: rgba(255,255,255,0.2);
+            margin: 0.5rem 0;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #FF6B6B;
+            color: white;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            margin: 0.5rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .contact {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗺️ WebGIS</h1>
+        <h2>Sistema de Informações Geográficas - Wdias</h2>
+        
+        <div class="map-container">
+            <div class="map-placeholder">🗺️</div>
+            <h3>Mapa Interativo</h3>
+            <p>Sistema de mapeamento rural e análise geográfica</p>
+        </div>
+        
+        <div class="property-list">
+            <h3>📊 Propriedades Cadastradas</h3>
+            <div class="property-item">
+                <strong>Propriedade 1:</strong> 150 hectares - Agricultura
+            </div>
+            <div class="property-item">
+                <strong>Propriedade 2:</strong> 200 hectares - Pecuária
+            </div>
+            <div class="property-item">
+                <strong>Propriedade 3:</strong> 300 hectares - Mista
+            </div>
+        </div>
+        
+        <div class="contact">
+            <h3>📞 Contato</h3>
+            <p>📧 contato@wdias.com.br</p>
+            <p>📞 (11) 99999-9999</p>
+            <p>📍 São Paulo, SP</p>
+        </div>
+        
+        <div style="margin-top: 2rem;">
+            <a href="#" class="btn" onclick="alert('Funcionalidade em desenvolvimento!')">🗺️ Ver Mapa Completo</a>
+            <a href="#" class="btn" onclick="alert('Em breve!')">📊 Relatórios</a>
+        </div>
+        
+        <div style="margin-top: 2rem; opacity: 0.8;">
+            <p>&copy; 2024 WebGIS - Wdias Assessoria Rural</p>
+            <p>Desenvolvido com ❤️ para o setor rural</p>
+        </div>
+    </div>
+    
+    <script>
+        // Contador de visitantes
+        let visitors = localStorage.getItem('visitors') || 0;
+        visitors = parseInt(visitors) + 1;
+        localStorage.setItem('visitors', visitors);
+        
+        console.log(`Visitante #${visitors} - Bem-vindo ao WebGIS!`);
+        
+        // Adicionar data atual
+        const year = new Date().getFullYear();
+        document.querySelector('.container').innerHTML += `
+            <div style="margin-top: 1rem; font-size: 0.8rem; opacity: 0.6;">
+                Última atualização: ${new Date().toLocaleDateString('pt-BR')}
+            </div>
+        `;
+    </script>
+</body>
+</html>
