@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: webgis-wdias
+    env: python
+    buildCommand: pip install -r requirements_simple.txt
+    startCommand: streamlit run app_robust.py --server.port=$PORT --server.address=0.0.0.0
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.0
